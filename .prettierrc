@@ -1,0 +1,15 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "printWidth": 120,
+  "bracketSpacing": false,
+  "jsxSingleQuote": true,
+  "importOrder": [
+    "^@core/(.*)$",
+    "^@server/(.*)$",
+    "^@ui/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": true
+}
+  

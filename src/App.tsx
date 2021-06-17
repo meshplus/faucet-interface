@@ -2,7 +2,7 @@ import React, {ChangeEvent, useState} from 'react'
 import Header from './components/Header'
 import {Box, Button, Grid, InputBase, Typography} from '@material-ui/core'
 import {createStyles, makeStyles} from '@material-ui/styles'
-import Banner from './assets/images/banner.svg'
+import BG from './assets/images/bg.png'
 import {ethers} from 'ethers'
 import {toast} from 'react-toastify'
 import ToastContent from './components/ToastContent'
@@ -11,8 +11,10 @@ const useStyles = makeStyles(() =>
   createStyles({
     root: {
       minHeight: 'calc(100vh - 66px)',
-      background: `url(${Banner}), #000000`,
+      background: `url(${BG}), #000000`,
       backgroundRepeat: 'no-repeat',
+      backgroundSize: '2000px 668px',
+      backgroundPosition: 'center top',
     },
     card: {
       background:
@@ -49,8 +51,8 @@ function App() {
     }
 
     try {
-      console.info(`send request: ${address}`)
-      const result = await fetch('', {
+      console.info(`Send request: ${address}`)
+      const result = await fetch(process.env.REACT_APP_HOST ?? '', {
         method: 'POST',
         body: JSON.stringify({
           net: 'bxh',

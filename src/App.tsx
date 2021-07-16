@@ -1,16 +1,16 @@
-import React, {ChangeEvent, useState} from 'react'
-import Header from './components/Header'
-import {Box, Button, Grid, InputBase, Typography} from '@material-ui/core'
-import {createStyles, makeStyles} from '@material-ui/styles'
+import { Box, Button, Grid, InputBase, MenuItem, Select, Typography } from '@material-ui/core'
+import { createStyles, makeStyles } from '@material-ui/styles'
+import { ethers } from 'ethers'
+import React, { ChangeEvent, useState } from 'react'
+import { toast } from 'react-toastify'
 import BG from './assets/images/bg.png'
-import {ethers} from 'ethers'
-import {toast} from 'react-toastify'
+import Header from './components/Header'
 import ToastContent from './components/ToastContent'
 
 const useStyles = makeStyles(() =>
   createStyles({
     root: {
-      minHeight: 'calc(100vh - 66px)',
+      minHeight: 'calc(100vh - 54px)',
       background: `url(${BG}), #000000`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: '2000px 668px',
@@ -37,6 +37,7 @@ const useStyles = makeStyles(() =>
       border: '1px solid #176383',
       padding: '5px 10px',
       color: '#fff !important',
+      borderRadius: '4px'
     },
   })
 )
@@ -44,6 +45,8 @@ const useStyles = makeStyles(() =>
 function App() {
   const classes = useStyles()
   const [address, setAddress] = useState('')
+  const [active, setActive] = useState({1: 'active', 2: ''})
+  const [token, setToken] = useState('0x2cC5E5bf1A04780E32fF9E88875B7D19C62DfA62')
 
   const send = async () => {
     if (!ethers.utils.isAddress(address)) {
@@ -51,12 +54,15 @@ function App() {
     }
 
     try {
-      console.info(`Send request: ${address}`)
+      const type = active[1] !== '' ? 'bxh' : 'erc20' 
+      console.info(`Type: ${type}, ERC20: ${token}, Address: ${address}`)
+      
       const result = await fetch(process.env.REACT_APP_HOST ?? '', {
         method: 'POST',
         body: JSON.stringify({
-          net: 'bxh',
+          net: type,
           address: address,
+          erc20_addr: token
         }),
         headers: {'Content-Type': 'application/json'},
       })
@@ -95,17 +101,68 @@ function App() {
               <Box className={classes.notice} p={2} borderRadius='4px' mb={4}>
                 规则提示：平台将自动发送1个测试网BXH到你的测试网地址，每个地址每天可获取一次，仅用于测试。
               </Box>
-              <Typography variant='subtitle2' color='#aaaaaa' mb={1}>
-                Testnet account address
-              </Typography>
-              <Box mb={2}>
-                <InputBase
-                  className={classes.input}
-                  fullWidth={true}
-                  placeholder='Enter your testnet account address'
-                  value={address}
-                  onChange={(e: ChangeEvent<{value: string}>) => setAddress(e.target.value)}
-                />
+              <Box p={2} mb={2} bgcolor='#0d131c99' borderRadius={1}>
+                <Typography variant='subtitle2' color='#aaaaaa' mb={1}>
+                  Select Type
+                </Typography>
+                <Box display='flex' mb={2} sx={{
+                  '& .type': {
+                    background: '#061013',
+                    border: '1px solid #154356',
+                    padding: '10px 20px',
+                    color: '#176383',
+                    cursor: 'pointer',
+                    '&:hover, &.active': {
+                      border: '1px solid #1A84B0',
+                      color: '#1DB5F4'
+                    }
+                  },
+                  '& .left': {
+                    borderTopLeftRadius: '4px',
+                    borderBottomLeftRadius: '4px',
+                  },
+                  '& .right': {
+                    borderTopRightRadius: '4px',
+                    borderBottomRightRadius: '4px',
+                  }
+                }}>
+                  <Box className={`type left ${active[1]}`} onClick={() => setActive({1: 'active', 2: ''})}>BXH</Box>
+                  <Box className={`type right ${active[2]}`} onClick={() => setActive({1: '', 2: 'active'})}>ERC20</Box>
+                </Box>
+                {
+                  active[2] && <>
+                    <Typography variant='subtitle2' color='#aaaaaa' mb={1}>
+                      Token address
+                    </Typography>
+                    <Box mb={2}>
+                      <Select
+                        sx={{
+                          border: '1px solid #176383', 
+                          color: 'rgba(255, 255, 255, 0.4)', 
+                          '& .MuiPaper-root': {backgroundColor: '#fff'} 
+                        }}
+                        fullWidth 
+                        value={token}
+                        onChange={(event: React.ChangeEvent<{ value: unknown }>) => setToken(event.target.value as string)}
+                      >
+                        <MenuItem value='0x2cC5E5bf1A04780E32fF9E88875B7D19C62DfA62'>0x2cC5E5bf1A04780E32fF9E88875B7D19C62DfA62</MenuItem>
+                        <MenuItem value='0x7f2910B2E60800beF7c96C4559217cF78C7B9ADA'>0x7f2910B2E60800beF7c96C4559217cF78C7B9ADA</MenuItem>
+                      </Select>
+                    </Box>
+                  </>
+                }
+                <Typography variant='subtitle2' color='#aaaaaa' mb={1}>
+                  Testnet account address
+                </Typography>
+                <Box mb={2}>
+                  <InputBase
+                    className={classes.input}
+                    fullWidth={true}
+                    placeholder='Enter your testnet account address'
+                    value={address}
+                    onChange={(e: ChangeEvent<{value: string}>) => setAddress(e.target.value)}
+                  />
+                </Box>
               </Box>
               <Button variant='contained' size='large' fullWidth onClick={send}>
                 Send

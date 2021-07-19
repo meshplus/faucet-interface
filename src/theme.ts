@@ -61,6 +61,9 @@ const theme = createTheme({
         },
         '.MuiListItem-root': {
           fontSize: '14px !important',
+          '& img': {
+            marginRight: '15px'
+          }
         },
         '.Mui-disabled': {
           background: '#F1F2F6 !important',

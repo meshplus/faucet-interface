@@ -6,6 +6,24 @@ import {toast} from 'react-toastify'
 import BG from './assets/images/bg.png'
 import Header from './components/Header'
 import ToastContent from './components/ToastContent'
+import Fish from './images/fish.svg'
+import Apple from './images/apple.svg'
+import Orange from './images/orange.svg'
+
+const getNetworkTypes = (tokenAddress: string) => {
+  switch (tokenAddress) {
+    case "0x93C2A4E6fc70124ec59C562a229f91988d6A2865":
+      return "bsc"
+    case "0xEB2cDAf0fa5E9763fcA90b9c80FA7de3988700f9":
+      return "bsc"
+    case "0xbdbBC9B9A81c8B56309F46E2Ea650D47697B482c":
+      return "erc20"
+    case "0x2862F68e270e7024776A6e10a4056D1F3eDA67C6":
+      return "erc20"
+    default:
+      return "erc20"
+  }
+}
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -46,7 +64,7 @@ function App() {
   const classes = useStyles()
   const [address, setAddress] = useState('')
   const [active, setActive] = useState({1: 'active', 2: ''})
-  const [token, setToken] = useState('0x2cC5E5bf1A04780E32fF9E88875B7D19C62DfA62')
+  const [token, setToken] = useState('0xEB2cDAf0fa5E9763fcA90b9c80FA7de3988700f9')
 
   const send = async () => {
     if (!ethers.utils.isAddress(address)) {
@@ -54,7 +72,7 @@ function App() {
     }
 
     try {
-      const type = active[1] !== '' ? 'bxh' : 'erc20'
+      const type = active[1] !== '' ? 'bxh' : getNetworkTypes(token)
       console.info(`Type: ${type}, ERC20: ${token}, Address: ${address}`)
 
       const result = await fetch(process.env.REACT_APP_HOST ?? '', {
@@ -152,13 +170,21 @@ function App() {
                         value={token}
                         onChange={(event: React.ChangeEvent<{value: unknown}>) => setToken(event.target.value as string)}
                       >
-                        <MenuItem value='0x2cC5E5bf1A04780E32fF9E88875B7D19C62DfA62'>
-                          <img src='https://cryptologos.cc/logos/uniswap-uni-logo.svg?v=013' alt='token' width={24} height={24} />
-                          Fish
+                        <MenuItem value='0xEB2cDAf0fa5E9763fcA90b9c80FA7de3988700f9'>
+                          <img src={Apple} alt='token' width={24} height={24} />
+                          Apple
                         </MenuItem>
-                        <MenuItem value='0x7f2910B2E60800beF7c96C4559217cF78C7B9ADA'>
-                          <img src='https://cryptologos.cc/logos/sushiswap-sushi-logo.svg?v=013' alt='token' width={24} />
-                          xETH
+                        <MenuItem value='0x93C2A4E6fc70124ec59C562a229f91988d6A2865'>
+                          <img src={Orange} alt='token' width={24} height={24} />
+                          Orange
+                        </MenuItem>
+                        <MenuItem value='0xbdbBC9B9A81c8B56309F46E2Ea650D47697B482c'>
+                          <img src='https://cryptologos.cc/logos/tether-usdt-logo.svg?v=013' alt='token' width={24} height={24} />
+                          USDT
+                        </MenuItem>
+                        <MenuItem value='0x2862F68e270e7024776A6e10a4056D1F3eDA67C6'>
+                          <img src={Fish} alt='token' width={24} />
+                          Fish
                         </MenuItem>
                       </Select>
                     </Box>

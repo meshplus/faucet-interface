@@ -1,13 +1,13 @@
-import {Box, Button, Grid, InputBase, MenuItem, Select, Typography} from '@material-ui/core'
-import {createStyles, makeStyles} from '@material-ui/styles'
-import {ethers} from 'ethers'
-import React, {ChangeEvent, useState} from 'react'
-import {toast} from 'react-toastify'
+import { Box, Button, Grid, InputBase, MenuItem, Select, Typography } from '@material-ui/core'
+import { createStyles, makeStyles } from '@material-ui/styles'
+import { ethers } from 'ethers'
+import React, {ChangeEvent, useEffect, useMemo, useState} from 'react'
+import { toast } from 'react-toastify'
 import BG from './assets/images/bg.png'
 import Header from './components/Header'
 import ToastContent from './components/ToastContent'
-import Fish from './images/fish.svg'
 import Apple from './images/apple.svg'
+import Fish from './images/fish.svg'
 import Orange from './images/orange.svg'
 
 const getNetworkTypes = (tokenAddress: string) => {
@@ -22,6 +22,50 @@ const getNetworkTypes = (tokenAddress: string) => {
       return "erc20"
     default:
       return "erc20"
+  }
+}
+
+const getTokens = (type: string) => {
+  if (type === 'erc20') {
+    return [
+      '0xbdbBC9B9A81c8B56309F46E2Ea650D47697B482c',
+      '0x2862F68e270e7024776A6e10a4056D1F3eDA67C6'
+    ]
+  } else {
+    return [
+      '0x93C2A4E6fc70124ec59C562a229f91988d6A2865',
+      '0xEB2cDAf0fa5E9763fcA90b9c80FA7de3988700f9'
+    ]
+  }
+}
+
+const getTokenMeta = (tokenAddress: string) => {
+  switch (tokenAddress) {
+    case "0x93C2A4E6fc70124ec59C562a229f91988d6A2865":
+      return {
+        name: 'Orange',
+        src: Orange
+      }
+    case "0xEB2cDAf0fa5E9763fcA90b9c80FA7de3988700f9":
+      return {
+        name: 'Apple',
+        src: Apple
+      }
+    case "0xbdbBC9B9A81c8B56309F46E2Ea650D47697B482c":
+      return {
+        name: 'USDT',
+        src: 'https://cryptologos.cc/logos/tether-usdt-logo.svg?v=013'
+      }
+    case "0x2862F68e270e7024776A6e10a4056D1F3eDA67C6":
+      return {
+        name: 'Fish',
+        src: Fish
+      }
+    default:
+      return {
+        name: 'Fish',
+        src: Fish
+      }
   }
 }
 
@@ -62,9 +106,16 @@ const useStyles = makeStyles(() =>
 
 function App() {
   const classes = useStyles()
+
+  const [type, setType] = useState('bxh')
+  const tokens = useMemo(() => getTokens(type), [type])
+
   const [address, setAddress] = useState('')
-  const [active, setActive] = useState({1: 'active', 2: ''})
-  const [token, setToken] = useState('0xEB2cDAf0fa5E9763fcA90b9c80FA7de3988700f9')
+  const [token, setToken] = useState(tokens[0])
+
+  useEffect(() => {
+    setToken(tokens[0])
+  }, [tokens])
 
   const send = async () => {
     if (!ethers.utils.isAddress(address)) {
@@ -72,7 +123,6 @@ function App() {
     }
 
     try {
-      const type = active[1] !== '' ? 'bxh' : getNetworkTypes(token)
       console.info(`Type: ${type}, ERC20: ${token}, Address: ${address}`)
 
       const result = await fetch(process.env.REACT_APP_HOST ?? '', {
@@ -123,32 +173,23 @@ function App() {
                 <Typography variant='subtitle2' color='#aaaaaa' mb={1}>
                   Select Type
                 </Typography>
-                <Box display='flex' mb={2} sx={{
-                  '& .type': {
-                    background: '#061013',
-                    border: '1px solid #154356',
-                    padding: '10px 20px',
-                    color: '#176383',
-                    cursor: 'pointer',
-                    '&:hover, &.active': {
-                      border: '1px solid #1A84B0',
-                      color: '#1DB5F4'
-                    }
-                  },
-                  '& .left': {
-                    borderTopLeftRadius: '4px',
-                    borderBottomLeftRadius: '4px'
-                  },
-                  '& .right': {
-                    borderTopRightRadius: '4px',
-                    borderBottomRightRadius: '4px'
-                  }
-                }}>
-                  <Box className={`type left ${active[1]}`} onClick={() => setActive({1: 'active', 2: ''})}>BXH</Box>
-                  <Box className={`type right ${active[2]}`} onClick={() => setActive({1: '', 2: 'active'})}>ERC20</Box>
-                </Box>
+                <Select
+                  sx={{
+                    marginBottom: '10px',
+                    border: '1px solid #176383',
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    '& .MuiPaper-root': {backgroundColor: '#fff'},
+                  }}
+                  fullWidth
+                  value={type}
+                  onChange={(event: React.ChangeEvent<{value: unknown}>) => setType(event.target.value as string)}
+                >
+                  <MenuItem value='bxh'>BXH</MenuItem>
+                  <MenuItem value='erc20'>ERC20</MenuItem>
+                  <MenuItem value='bsc'>BEP20</MenuItem>
+                </Select>
                 {
-                  active[2] && <>
+                  type !== 'bxh' && <>
                     <Typography variant='subtitle2' color='#aaaaaa' mb={1}>
                       Token address
                     </Typography>
@@ -170,22 +211,14 @@ function App() {
                         value={token}
                         onChange={(event: React.ChangeEvent<{value: unknown}>) => setToken(event.target.value as string)}
                       >
-                        <MenuItem value='0xEB2cDAf0fa5E9763fcA90b9c80FA7de3988700f9'>
-                          <img src={Apple} alt='token' width={24} height={24} />
-                          Apple
-                        </MenuItem>
-                        <MenuItem value='0x93C2A4E6fc70124ec59C562a229f91988d6A2865'>
-                          <img src={Orange} alt='token' width={24} height={24} />
-                          Orange
-                        </MenuItem>
-                        <MenuItem value='0xbdbBC9B9A81c8B56309F46E2Ea650D47697B482c'>
-                          <img src='https://cryptologos.cc/logos/tether-usdt-logo.svg?v=013' alt='token' width={24} height={24} />
-                          USDT
-                        </MenuItem>
-                        <MenuItem value='0x2862F68e270e7024776A6e10a4056D1F3eDA67C6'>
-                          <img src={Fish} alt='token' width={24} />
-                          Fish
-                        </MenuItem>
+                        {
+                          tokens.map(token => (
+                            <MenuItem value={token}>
+                              <img src={getTokenMeta(token).src} alt='token' width={24} height={24} />
+                              {getTokenMeta(token).name}
+                            </MenuItem>
+                          ))
+                        }
                       </Select>
                     </Box>
                   </>

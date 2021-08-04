@@ -59,6 +59,23 @@ const theme = createTheme({
         a: {
           textDecoration: 'none',
         },
+        '& .MuiListItem-padding': {
+          padding: '8px 16px !important'
+        },
+        '& .MuiSelect-root': {
+          '& svg': {
+            color: 'rgba(255, 255 ,255, .5) !important'
+          }
+        },
+        '& .MuiSelect-select': {
+          padding: '10px 60px 10px 15px !important',
+        },
+        '& .MuiPaper-root': {
+          border: '1px solid',
+          borderImage: 'linear-gradient(to right,rgba(6,135,127,1),rgba(48,80,133,1),rgba(73,77,170,0.92)) 1 10',
+          backgroundColor: '#08151A !important',
+          color: '#fff !important'
+        },
         '.MuiListItem-root': {
           fontSize: '14px !important',
           '& img': {
@@ -78,7 +95,7 @@ const theme = createTheme({
           borderRadius: '8px',
           top: '60px',
           padding: '8px 16px',
-          color: '#000',
+          color: 'rgba(255, 255, 255, 0.9)',
 
           '& svg': {
             marginRight: '5px',
@@ -87,6 +104,9 @@ const theme = createTheme({
         '.Toastify__toast--info': {
           background:
             'radial-gradient(circle, rgba(223,232,254,1) 0%, rgba(252,255,251,1) 45%, rgba(255,242,250,1) 80%);',
+        },
+        '.Toastify__toast--error': {
+          background: '#132229 !important',
         },
         '.MuiStepLabel-root.Mui-disabled': {
           background: '#fff !important',

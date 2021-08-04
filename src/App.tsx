@@ -1,7 +1,7 @@
 import { Box, Button, Grid, InputBase, MenuItem, Select, Typography } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/styles'
 import { ethers } from 'ethers'
-import React, {ChangeEvent, useEffect, useMemo, useState} from 'react'
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import BG from './assets/images/bg.png'
 import Header from './components/Header'
@@ -9,21 +9,6 @@ import ToastContent from './components/ToastContent'
 import Apple from './images/apple.svg'
 import Fish from './images/fish.svg'
 import Orange from './images/orange.svg'
-
-const getNetworkTypes = (tokenAddress: string) => {
-  switch (tokenAddress) {
-    case "0x93C2A4E6fc70124ec59C562a229f91988d6A2865":
-      return "bsc"
-    case "0xEB2cDAf0fa5E9763fcA90b9c80FA7de3988700f9":
-      return "bsc"
-    case "0xbdbBC9B9A81c8B56309F46E2Ea650D47697B482c":
-      return "erc20"
-    case "0x2862F68e270e7024776A6e10a4056D1F3eDA67C6":
-      return "erc20"
-    default:
-      return "erc20"
-  }
-}
 
 const getTokens = (type: string) => {
   if (type === 'erc20') {
@@ -113,6 +98,8 @@ function App() {
   const [address, setAddress] = useState('')
   const [token, setToken] = useState(tokens[0])
 
+  console.log('App')
+
   useEffect(() => {
     setToken(tokens[0])
   }, [tokens])
@@ -153,7 +140,7 @@ function App() {
       <Header />
       <Box className={classes.root}>
         <Box display='flex' justifyContent='center' alignItems='center' style={{minHeight: `calc(100vh - 66px)`}}>
-          <Grid item lg={5} md={6}>
+          <Grid item xl={4} lg={5} md={6}>
             <Box className={classes.card} p={4} ml={2} mr={2}>
               <Box
                 display='inline-block'
@@ -180,7 +167,6 @@ function App() {
                     color: 'rgba(255, 255, 255, 0.8)',
                     '& .MuiPaper-root': {backgroundColor: '#fff'},
                   }}
-                  fullWidth
                   value={type}
                   onChange={(event: React.ChangeEvent<{value: unknown}>) => setType(event.target.value as string)}
                 >
@@ -213,7 +199,7 @@ function App() {
                       >
                         {
                           tokens.map(token => (
-                            <MenuItem value={token}>
+                            <MenuItem key={token} value={token}>
                               <img src={getTokenMeta(token).src} alt='token' width={24} height={24} />
                               {getTokenMeta(token).name}
                             </MenuItem>

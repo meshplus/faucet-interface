@@ -154,7 +154,7 @@ function App() {
                 Faucet
               </Box>
               <Box className={classes.notice} p={2} borderRadius='4px' mb={4}>
-                规则提示：平台将自动发送1个测试网BXH到你的测试网地址，每个地址每天可获取一次，仅用于测试。
+                Automatically send 1 BXH to your testnet account , Each account can be obtained once a day，The BXH can only be used for testnet.
               </Box>
               <Box p={2} mb={2} bgcolor='#0d131c99' borderRadius={1}>
                 <Typography variant='subtitle2' color='#aaaaaa' mb={1}>
